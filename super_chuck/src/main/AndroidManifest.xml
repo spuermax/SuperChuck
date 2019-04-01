@@ -6,7 +6,22 @@
         <activity
             android:name=".internal.view.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/Chuck.Theme"
+            />
+
+        <provider
+            android:name=".internal.data.ChuckContentProvider"
+            android:authorities="${applicationId}.chuck.provider"
+            android:exported="false" />
+
+        <activity android:name=".internal.view.TransactionActivity"
+            android:theme="@style/Chuck.Theme"
+            android:parentActivityName=".internal.view.MainActivity"
+
+            />
+        <service
+            android:name=".internal.helper.ClearTransactionsService"
+            android:exported="false" />
     </application>
 
 </manifest>

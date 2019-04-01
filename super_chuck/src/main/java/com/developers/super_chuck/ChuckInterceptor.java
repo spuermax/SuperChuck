@@ -155,8 +155,7 @@ public class ChuckInterceptor implements Interceptor {
         httpTransaction.setResponseCode(response.code());
         httpTransaction.setResponseMessage(response.message());
 
-        httpTransaction.setRequestContentLength(requestBody.contentLength());
-
+        httpTransaction.setResponseContentLength(responseBody.contentLength());
         if(requestBody.contentType() != null){
             httpTransaction.setResponseContentType(responseBody.contentType().toString());
         }

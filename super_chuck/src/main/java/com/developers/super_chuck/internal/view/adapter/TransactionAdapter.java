@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.developers.super_chuck.R;
 import com.developers.super_chuck.internal.data.HttpTransaction;
+import com.developers.super_chuck.internal.data.LocalCupboard;
 import com.developers.super_chuck.internal.view.TransactionListFragment;
 
 /**
@@ -55,7 +56,34 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
-
+                final HttpTransaction transaction = LocalCupboard.getInstance().withCursor(cursor).get(HttpTransaction.class);
+                final ViewHolder holder = (ViewHolder) view.getTag();
+                holder.path.setText(transaction.getMethod() + " " + transaction.getPath());
+                holder.host.setText(transaction.getHost());
+                holder.start.setText(transaction.getRequestStartTimeString());
+                holder.ssl.setVisibility(transaction.isSsl() ? View.VISIBLE : View.GONE);
+                if (transaction.getStatus() == HttpTransaction.Status.Complete) {
+                    holder.code.setText(String.valueOf(transaction.getResponseCode()));
+                    holder.duration.setText(transaction.getDurationString());
+                    holder.size.setText(transaction.getTotalSizeString());
+                } else {
+                    holder.code.setText(null);
+                    holder.duration.setText(null);
+                    holder.size.setText(null);
+                }
+                if (transaction.getStatus() == HttpTransaction.Status.Failed) {
+                    holder.code.setText("!!!");
+                }
+                setStatusColor(holder, transaction);
+                holder.transaction = transaction;
+                holder.view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (null != TransactionAdapter.this.listener) {
+                            TransactionAdapter.this.listener.onListFragmentInteraction(holder.transaction);
+                        }
+                    }
+                });
             }
 
             private void setStatusColor(ViewHolder holder, HttpTransaction transaction) {
